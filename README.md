@@ -26,7 +26,7 @@
 
 - [1 - Hudi基本概念](/hudi/hudi-consept-1.md)
 
-- [2 - Hudi编译](/hudi/hudi-compile-2.md)  
+- [2 - Hudi编译](/hudi/hudi-compile-2.md)
 
 - [3 - Hudi-Spark](/hudi/hudi-spark-3.md)
 

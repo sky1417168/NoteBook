@@ -69,7 +69,7 @@
 
 Hudi的核心是维护表上在不同的即时时间（instants）执行的所有操作的时间轴（timeline），这有助于提供表的即时视图，同时还有效地支持按到达顺序检索数据。一个instant由以下三个部分组成
 
-![时间轴](/images/hudi-consept-1/hudi-timeline.png)
+![时间轴](https://southwinds.oss-cn-beijing.aliyuncs.com/NoteBook/hudi/hudi-consept-1/hudi-timeline.png)
 
 #### 文件布局-File Layout
 
