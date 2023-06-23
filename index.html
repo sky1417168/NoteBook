@@ -10,8 +10,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <!-- 主题 -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/buble.css">
+  <!-- 目录跳转主题-->
+  <link rel="stylesheet" href="https://unpkg.com/docsify-toc@1.0.0/dist/toc.css">
   <!-- 设置浏览器图标 -->
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+
 </head>
 <body>
   <!-- 定义加载时候的动作 -->
@@ -19,7 +22,7 @@
   <script>
     window.$docsify = {
       // 项目名称
-      name: 'Docsify-Guide',
+      name: 'sky\'s NoteBook',
       // 仓库地址，点击右上角的Github章鱼猫头像会跳转到此地址
       repo: 'https://github.com/YSGStudyHards',
       // 侧边栏支持，默认加载的是项目根目录下的_sidebar.md文件
@@ -28,12 +31,18 @@
       loadNavbar: true,
       // 封面支持，默认加载的是项目根目录下的_coverpage.md文件
       coverpage: true,
+      // 页脚 默认加载的是项目根目录下的_footer.md
+      loadFooter: false,
       // 最大支持渲染的标题层级
       maxLevel: 5,
       // 自定义侧边栏后默认不会再生成目录，设置生成目录的最大层级（建议配置为2-4）
-      subMaxLevel: 4,
+      subMaxLevel: 2,
       // 小屏设备下合并导航栏到侧边栏
       mergeNavbar: true,
+      // 加载_404.md
+      notFoundPage: true,
+      // 滚动到锚点是与顶部的距离
+      topMargin: 90,
       /*搜索相关设置*/
       search: {
         maxAge: 86400000,// 过期时间，单位毫秒，默认一天
@@ -46,8 +55,65 @@
         noData: '找不到结果',
         depth: 4,
         hideOtherSidebarContent: false,
-        namespace: 'Docsify-Guide',
+        namespace: '南风过境',
+      },
+      // 字数插件
+      count:{
+        countable: true,
+        position: 'top',
+        margin: '10px',
+        float: 'right',
+        fontsize:'0.9em',
+        color:'rgb(90,90,90)',
+        language:'chinese',
+        localization: {
+          words: "",
+          minute: ""
+        },
+        isExpected: true
+      },
+      // 文本高亮
+      'flexible-alerts': {
+        style: 'flat',
+        note: {
+          label: "说明"
+        },
+        tip: {
+          label: "提示"
+        },
+        warning: {
+          label: "警告"
+        },
+        attention: {
+          label: "注意"
+        }
+      },
+      //分享
+      share: {
+        reddit: true,
+        linkedin: true,
+        facebook: true,
+        twitter: true,
+        whatsapp: true,
+        telegram: true,
+      },
+      //代码复制
+      copyCode: {
+        buttonText : '复制',
+        errorText  : '失败',
+        successText: '成功'
+      },
+      //流程图
+      plantuml: {
+        skin: 'default',
+      },
+      //目录跳转
+      toc: {
+        scope: '.markdown-section',
+        headings: 'h1, h2, h3, h4, h5, h6',
+        title: '目录跳转',
       }
+
     }
   </script>
 
@@ -59,8 +125,32 @@
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
   <!-- 搜索功能支持 -->
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <!--在所有的代码块上添加一个简单的Click to copy按钮来允许用户从你的文档中轻易地复制代码-->
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+  <!-- 代码复制-->
+  <script src="https://unpkg.com/docsify-copy-code"></script>
+  <!-- 字数插件 -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-count@latest/dist/countable.min.js"></script>
+  <!-- 文本高亮 -->
+  <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
+  <!-- 页脚信息 -->
+  <script src="//cdn.jsdelivr.net/npm/@alertbox/docsify-footer/dist/docsify-footer.min.js"></script>
+  <!-- 分享 -->
+  <script src="//unpkg.com/docsify-share/build/index.min.js"></script>
+  <!-- 流程图 -->
+  <script src="//unpkg.com/docsify-plantuml/dist/docsify-plantuml.min.js"></script>
+  <!-- 目录跳转 -->
+  <script src="https://unpkg.com/docsify-toc@1.0.0/dist/toc.js"></script>
+  <!-- prism代码高亮 -->
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-scala.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-vim.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-git.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cshtml.js"></script>
+
 
 </body>
 </html>
