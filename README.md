@@ -10,6 +10,8 @@
 
 ## ☕ Java
 
+- [1 - Java基础](/java/java-basics-1.md)
+
 ## ☁ Scala
 
 ## 🐍 Python

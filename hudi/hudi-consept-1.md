@@ -67,9 +67,44 @@
 
 #### 时间轴-TimeLine
 
-Hudi的核心是维护表上在不同的即时时间（instants）执行的所有操作的时间轴（timeline），这有助于提供表的即时视图，同时还有效地支持按到达顺序检索数据。一个instant由以下三个部分组成
+![时间轴-1](../images/hudi/hudi-consept-1/hudi-consept-timeline-1.png)
 
-![时间轴](https://southwinds.oss-cn-beijing.aliyuncs.com/NoteBook/hudi/hudi-consept-1/hudi-timeline.png)
+Hudi的核心是维护表上在不同的即时时间（instants）执行的所有操作的时间轴（timeline），这有助于提供表的即时视图，同时还有效地支持按到达顺序检索数据。一个instant由以下三个部分组成：
+
+1）Instant action：在表上执行的操作类型
+
+**COMMITS**：一次commit表示将一批数据原子性地写入一个表。
+
+**CLEANS**：清除表中不再需要的旧版本文件的后台活动。
+
+**DELTA_COMMIT**：增量提交指的是将一批数据原子性地写入一个MOR类型的表，其中部分或所有数据可以写入增量日志。
+
+**COMPACTION**：合并Hudi内部差异数据结构的后台活动，例如:将更新操作从基于行的log日志文件合并到列式存储的数据文件。在内部，COMPACTION体现为timeline上的特殊提交。
+
+**ROLLBACK**：表示当commit/delta_commit不成功时进行回滚，其会删除在写入过程中产生的部分文件。
+
+**SAVEPOINT**：将某些文件组标记为已保存，以便其不会被删除。在发生灾难需要恢复数据的情况下，它有助于将数据集还原到时间轴上的某个点。
+
+2）Instant time
+
+通常是一个时间戳（例如：20190117010349），它按照动作开始时间的顺序单调增加。
+
+3）State
+**REQUESTED**：表示某个action已经调度，但尚未执行。
+**INFLIGHT**：表示action当前正在执行。
+**COMPLETED**：表示timeline上的action已经完成。
+
+4）两个时间概念
+
+区分两个重要的时间概念：
+
+**Arrival time**: 数据到达 Hudi 的时间，commit time。
+
+**Event time**: record 中记录的时间。
+
+![时间轴-2](../images/hudi/hudi-consept-1/hudi-consept-timeline-2.png)
+
+
 
 #### 文件布局-File Layout
 
@@ -82,4 +117,5 @@ Hudi的核心是维护表上在不同的即时时间（instants）执行的所�
 ### 数据写
 
 ### 数据读
+!> 提示信息
 

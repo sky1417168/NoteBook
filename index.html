@@ -13,8 +13,7 @@
   <!-- 目录跳转主题-->
   <link rel="stylesheet" href="https://unpkg.com/docsify-toc@1.0.0/dist/toc.css">
   <!-- 设置浏览器图标 -->
-  <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
-
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 </head>
 <body>
   <!-- 定义加载时候的动作 -->
@@ -24,7 +23,7 @@
       // 项目名称
       name: 'sky\'s NoteBook',
       // 仓库地址，点击右上角的Github章鱼猫头像会跳转到此地址
-      repo: 'https://github.com/YSGStudyHards',
+      repo: 'https://github.com/sky1417168',
       // 侧边栏支持，默认加载的是项目根目录下的_sidebar.md文件
       loadSidebar: false,
       // 导航栏支持，默认加载的是项目根目录下的_navbar.md文件
@@ -36,7 +35,7 @@
       // 最大支持渲染的标题层级
       maxLevel: 5,
       // 自定义侧边栏后默认不会再生成目录，设置生成目录的最大层级（建议配置为2-4）
-      subMaxLevel: 2,
+      subMaxLevel: 1  ,
       // 小屏设备下合并导航栏到侧边栏
       mergeNavbar: true,
       // 加载_404.md
@@ -107,12 +106,24 @@
       plantuml: {
         skin: 'default',
       },
-      //目录跳转
-      toc: {
-        scope: '.markdown-section',
-        headings: 'h1, h2, h3, h4, h5, h6',
-        title: '目录跳转',
+      // 图片居中
+      markdown: {
+        renderer: {
+          image: function(href, title, text) {
+            // 按照原来的渲染 img
+            const image_html = this.origin.image.apply(this, arguments);
+            // 用 figure 包一下图片，实现居中
+            return '<figure>' + image_html + '<figcaption>' + text +
+                    '</figcaption></figure>'
+          }
+        }
       }
+      //目录跳转
+      // toc: {
+      //   scope: '.markdown-section',
+      //   headings: 'h1, h2, h3, h4, h5, h6',
+      //   title: '目录跳转',
+      // }
 
     }
   </script>
@@ -138,7 +149,7 @@
   <!-- 流程图 -->
   <script src="//unpkg.com/docsify-plantuml/dist/docsify-plantuml.min.js"></script>
   <!-- 目录跳转 -->
-  <script src="https://unpkg.com/docsify-toc@1.0.0/dist/toc.js"></script>
+<!--  <script src="https://unpkg.com/docsify-toc@1.0.0/dist/toc.js"></script>-->
   <!-- prism代码高亮 -->
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.js"></script>
@@ -151,6 +162,11 @@
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-git.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cshtml.js"></script>
 
-
+  // 图片居中设置
+  <style>
+    figure {
+      text-align: center
+    }
+  </style>
 </body>
 </html>
