@@ -311,9 +311,9 @@ hudi使用布隆过滤器（裁剪）写入：
 
 #### 表类型-Table Type
 
-1）Copy On Write
+1）**Copy On Write**
 
-在COW表中，只有数据文件/基本文件（.parquet）,没有增量日志文件（.log.*）。
+在COW表中，**只有数据文件/基本文件**（.parquet）,没有增量日志文件（.log.*）。
 
 对每一个新批次写入都将创建相应数据文件的新版本（新的FileSlice），新版本文件包括旧版本文件的记录以及来自传入批次的记录（全量最新）。
 
@@ -325,13 +325,15 @@ hudi使用布隆过滤器（裁剪）写入：
 
 ![cow-2](../images/hudi/hudi-consept-1/hudi-consept-cow-12.png ':size=50%')
 
-因此data_file1 和 data_file2 都将创建更新的版本，data_file1 V2 是data_file1 V1 的内容与data_file1 中传入批次匹配记录的记录合并。
+> [!note] 
+>
+> data_file1 和 data_file2 都将创建更新的版本，data_file1 V2 是data_file1 V1 的内容与data_file1 中传入批次匹配记录的记录合并。
+>
+> 由于在写入期间进行合并，COW 会产生一些写入延迟。但是COW 的优势在于它的简单性，不需要其他表服务（如压缩），也相对容易调试。
 
-由于在写入期间进行合并，COW 会产生一些写入延迟。但是COW 的优势在于它的简单性，不需要其他表服务（如压缩），也相对容易调试。
+2）**Merge On Read**
 
-2）Merge On Read
-
-MOR表中，包含列存的基本文件（.parquet）和行存的增量日志文件（基于行的avro格式，.log.*）。
+MOR表中，包含列存的**基本文件**（.parquet）和**行存的增量日志文件**（基于行的avro格式，.log.*）。
 
 顾名思义，MOR表的合并成本在读取端。因此在写入期间我们不会合并或创建较新的数据文件版本。标记/索引完成后，对于具有要更新记录的现有数据文件，Hudi 创建增量日志文件并适当命名它们，以便它们都属于一个文件组。
 
@@ -341,7 +343,11 @@ MOR表中，包含列存的基本文件（.parquet）和行存的增量日志文
 
 ![mor-2](../images/hudi/hudi-consept-1/hudi-consept-mor-14.png ':size=50%')
 
-用户可以选择内联或异步模式运行压缩。Hudi也提供了不同的压缩策略供用户选择，最常用的一种是基于提交的数量。例如可以将压缩的最大增量日志配置为 4。这意味着在进行 4 次增量写入后，将对数据文件进行压缩并创建更新版本的数据文件。压缩完成后，读取端只需要读取最新的数据文件，而不必关心旧版本文件。
+用户可以选择内联或异步模式运行压缩。
+
+Hudi也提供了不同的压缩策略供用户选择，最常用的一种是基于提交的数量。
+
+例如可以将压缩的最大增量日志配置为 4。这意味着在进行 4 次增量写入后，将对数据文件进行压缩并创建更新版本的数据文件。压缩完成后，读取端只需要读取最新的数据文件，而不必关心旧版本文件。
 
 MOR表的写入行为，依据 index 的不同会有细微的差别：
 
@@ -349,7 +355,9 @@ MOR表的写入行为，依据 index 的不同会有细微的差别：
 
 对于可以对 log file 生成 index 的索引方案，例如 Flink writer 中基于 state 的索引，每次写入都是 log format，并且会不断追加和 roll over。
 
-3）COW与MOR的对比
+
+
+3）**COW与MOR的对比**
 
 |                      | **CopyOnWrite**           | **MergeOnRead**      |
 | -------------------- | ------------------------- | -------------------- |
@@ -365,9 +373,9 @@ MOR表的写入行为，依据 index 的不同会有细微的差别：
 
 Hudi支持如下三种查询类型：
 
-1）Snapshot Queries
+1）**Snapshot Queries**
 
-快照查询，可以查询指定commit/delta commit即时操作后表的最新快照。
+**快照查询**，可以查询指定commit/delta commit即时操作后表的最新快照。
 
 在读时合并（MOR）表的情况下，它通过即时合并最新文件片的基本文件和增量文件来提供近实时表（几分钟）。
 
@@ -377,13 +385,13 @@ Hudi支持如下三种查询类型：
 
 ![COW-快照查询](../images/hudi/hudi-consept-1/hudi-consept-query-15.png  ':size=50%')
 
-2）Incremental Queries
+2）**Incremental Queries**
 
-增量查询，可以查询给定commit/delta commit即时操作以来新写入的数据。有效的提供变更流来启用增量数据管道。
+**增量查询**，可以查询给定commit/delta commit即时操作以来新写入的数据。有效的提供变更流来启用增量数据管道。
 
-3）Read Optimized Queries
+3）**Read Optimized Queries**
 
-读优化查询，可查看给定的commit/compact即时操作的表的最新快照。仅将最新文件片的基本/列文件暴露给查询，并保证与非Hudi表相同的列查询性能。
+**读优化查询**，可查看给定的commit/compact即时操作的表的最新快照。仅将最新文件片的基本/列文件暴露给查询，并保证与非Hudi表相同的列查询性能。
 
 下图是MOR表的快照查询与读优化查询的对比：
 
@@ -396,7 +404,7 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 | 数据延迟 | 低                                      | 高                   |
 | 查询延迟 | 高（合并列式基础文件+行式增量日志文件） | 低(原始列式基础文件) |
 
-4）不同表支持的查询类型
+4）**不同表支持的查询类型**
 
 | Table Type    | Supported Query Types                                        |
 | ------------- | ------------------------------------------------------------ |
@@ -405,24 +413,26 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 ![](../images/hudi/hudi-consept-1/hudi-consept-cowquery-16.gif)
 
+> [!tip] COW表数据插入和更新，快照查询和增量查询
+
 ![](../images/hudi/hudi-consept-1/hudi-consept-morquery-17.gif)
 
-
+> [!tip] MOR表数据插入和更新，快照查询，增量查询，读优化查询
 
 
 ### 数据写
 
 #### 写操作
 
-（1）UPSERT：默认行为，数据先通过 index 打标(INSERT/UPDATE)，有一些启发式算法决定消息的组织以优化文件的大小 => CDC 导入
+（1）**UPSERT**：默认行为，数据先通过 index 打标(INSERT/UPDATE)，有一些启发式算法决定消息的组织以优化文件的大小 => CDC 导入
 
-（2）INSERT：跳过 index，写入效率更高 => Log Deduplication
+（2）**INSERT**：跳过 index，写入效率更高 => Log Deduplication
 
-（3）BULK_INSERT：写排序，对大数据量的 Hudi 表初始化友好，对文件大小的限制 best effort（写 HFile）
+（3）**BULK_INSERT**：写排序，对大数据量的 Hudi 表初始化友好，对文件大小的限制 best effort（写 HFile）
 
 #### 写流程（UPSERT）
 
-1）Copy On Write
+1）**Copy On Write**
 
 （1）先对 records 按照 record key 去重
 
@@ -432,7 +442,7 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 （4）对于 insert 消息，会扫描当前 partition 的所有 SmallFile（小于一定大小的 base file），然后 merge 写新的 FileSlice；如果没有 SmallFile，直接写新的 FileGroup + FileSlice
 
-2）Merge On Read
+2）**Merge On Read**
 
 （1）先对 records 按照 record key 去重（可选）
 
@@ -446,7 +456,7 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 #### 写流程（INSERT）
 
-1）Copy On Write
+1）**Copy On Write**
 
 （1）先对 records 按照 record key 去重（可选）
 
@@ -454,7 +464,7 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 （3）如果有小的 base file 文件，merge base file，生成新的 FileSlice + base file，否则直接写新的 FileSlice + base file
 
-2）Merge On Read
+2）**Merge On Read**
 
 （1）先对 records 按照 record key 去重（可选）
 
@@ -466,19 +476,19 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 在同一分区中创建新的文件组集。现有的文件组被标记为 "删除"。根据新记录的数量创建新的文件组
 
-1）COW
+1）**COW**
 
 | **在插入分区之前**                             | **插入相同数量的记录覆盖**                                   | **插入覆盖更多的记录**                                       | **插入重写1****条记录**                                      |
 | ---------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 分区包含  file1-t0.parquet，file2-t0.parquet。 | 分区将添加file3-t1.parquet，file4-t1.parquet。file1, file2在t1后的元数据中被标记为无效。 | 分区将添加  file3-t1.parquet，  file4-t1.parquet，  file5-t1.parquet，  ...，  fileN-t1.parquet。  file1,  file2在t1后的元数据中被标记为无效 | 分区将添加file3-t1.parquet。file1, file2在t1后的元数据中被标记为无效。 |
 
-2）MOR
+2）**MOR**
 
 | **在插入分区之前**                                           | **插入相同数量的记录覆盖**                                   | **插入覆盖更多的记录**                                       | **插入重写1****条记录**                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 分区包含  file1-t0.parquet，  file2-t0.parquet。  .file1-t00.log | file3-t1.parquet，  file4-t1.parquet。  file1,  file2在t1后的元数据中被标记为无效。 | file3-t1.parquet,    file4-t1.parquet  ...  fileN-t1.parquet  file1,  file2在t1后的元数据中被标记为无效 | 分区将添加file3-t1.parquet。file1, file2在t1后的元数据中被标记为无效。 |
 
-3）优点
+3）**优点**
 
 （1）COW和MOR在执行方面非常相似。不干扰MOR的compaction。
 
@@ -488,7 +498,7 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 （4）可以扩展清理策略，在一定的时间窗口后删除旧文件组。
 
-4）缺点
+4）**缺点**
 
 （1）需要转发以前提交的元数据。
 
@@ -502,11 +512,14 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 用来生成 HoodieKey（record key + partition path），目前支持以下策略：
 
-支持多个字段组合 record keys
+- 支持多个字段组合 record keys
 
-支持多个字段组合的 parition path （可定制时间格式，Hive style path name）
 
-非分区表
+- 支持多个字段组合的 parition path （可定制时间格式，Hive style path name）
+
+
+- 非分区表
+
 
 #### 删除策略
 
@@ -532,13 +545,18 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
 #### Snapshot读
 
-读取所有 partiiton 下每个 FileGroup 最新的 FileSlice 中的文件，Copy On Write 表读 parquet 文件，Merge On Read 表读 parquet + log 文件
+读取所有 partiiton 下每个 FileGroup 最新的 FileSlice 中的文件
+
+- Copy On Write 表读 parquet 文件
+- Merge On Read 表读 parquet + log 文件
 
 #### Incremantal读
 
 https://hudi.apache.org/docs/querying_data.html#spark-incr-query
 
-当前的 Spark data source 可以指定消费的起始和结束 commit 时间，读取 commit 增量的数据集。但是内部的实现不够高效：拉取每个 commit 的全部目标文件再按照系统字段 _hoodie_commit_time_ apply 过滤条件。
+当前的 Spark data source 可以指定消费的起始和结束 commit 时间，读取 commit 增量的数据集。
+
+但是内部的实现不够高效：拉取每个 commit 的全部目标文件再按照系统字段 _hoodie_commit_time_ apply 过滤条件。
 
 #### Streaming读
 
@@ -551,6 +569,18 @@ https://hudi.apache.org/docs/querying_data.html#spark-incr-query
 （2）有 base file：走 copy on write upsert 流程，先读 log file 建 index，再读 base file，最后读 log file 写新的 base file
 
 Flink 和 Spark streaming 的 writer 都可以 apply 异步的 compaction 策略，按照间隔 commits 数或者时间来触发 compaction 任务，在独立的 pipeline 中执行。
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
