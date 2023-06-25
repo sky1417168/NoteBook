@@ -1,5 +1,7 @@
 # Hudi基本概念
 
+> [!tip] 参考官网文档：https://hudi.apache.org/docs/overview
+
 ## 发展历史
 
 2015 年：发表了增量处理的核心思想/原则（O'reilly 文章）。
