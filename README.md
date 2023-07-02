@@ -13,7 +13,7 @@
 
 - [2 - HDFS详解](/hadoop/hadoop-hdfs-2.md)
 
-## 🍊 Hudi
+## Hudi
 
 - [1 - Hudi基本概念](/hudi/hudi-consept-1.md)
 
