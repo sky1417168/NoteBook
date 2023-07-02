@@ -69,7 +69,7 @@
 
 #### 时间轴-TimeLine
 
-![时间轴-1](../images/hudi/hudi-consept-1/hudi-consept-timeline-1.png)
+![时间轴-1](img/hudi/hudi-consept-1/hudi-consept-timeline-1.png)
 
 > [!NOTE] Hudi的核心是维护表上在不同的即时时间（instants）执行的所有操作的时间轴（timeline），这有助于提供表的即时视图，同时还有效地支持按到达顺序检索数据。
 
@@ -106,7 +106,7 @@
 
 **Event time**: record 中记录的时间。
 
-![时间轴-2](../images/hudi/hudi-consept-1/hudi-consept-timeline-2.png ':size=70%')
+![时间轴-2](img/hudi/hudi-consept-1/hudi-consept-timeline-2.png ':size=70%')
 
 > [!NOTE] 上图中采用时间（小时）作为分区字段，分别有7:00，8:00，9:00，10:00等多个分区
 >
@@ -120,7 +120,7 @@
 
 Hudi将一个表映射为如下文件结构：
 
-![文件布局](../images/hudi/hudi-consept-1/fhudi-consept-filelayout-3.png ':size=30%')
+![文件布局](img/hudi/hudi-consept-1/fhudi-consept-filelayout-3.png ':size=30%')
 
 **Hudi存储分为两个部分**：
 
@@ -154,7 +154,7 @@ Hudi将一个表映射为如下文件结构：
 
 文件组的布局：
 
-![文件组](../images/hudi/hudi-consept-1/hudi-consept-fliegroup-4.png ':size=50%')
+![文件组](img/hudi/hudi-consept-1/hudi-consept-fliegroup-4.png ':size=50%')
 
 > [!NOTE] 如上图，一个文件组（FileGroup）下有多个文件片（FileSlice），一个文件片包含多个base文件（parquet）和若干个log文件（MOR表才有）
 
@@ -163,7 +163,7 @@ Hudi将一个表映射为如下文件结构：
 -  compaction操作：合并日志和基本文件以产生新的文件片
 -  clean操作：清除不使用的/旧的文件片以回收文件系统上的空间
 
-![数据更新](../images/hudi/hudi-consept-1/hudi-consept-update-5.png ':size=60%')
+![数据更新](img/hudi/hudi-consept-1/hudi-consept-update-5.png ':size=60%')
 
 > [!NOTE]
 >
@@ -187,7 +187,7 @@ Hudi将一个表映射为如下文件结构：
 
 （8）Hudi 的 log （avro 文件）是自己编码的，通过积攒数据 buffer 以 LogBlock 为单位写出，每个 LogBlock 包含 magic number、size、content、footer 等信息，用于数据读、校验和过滤。
 
-![文件格式](../images/hudi/hudi-consept-1/hudi-consept-file-6.png ':size=40%')
+![文件格式](img/hudi/hudi-consept-1/hudi-consept-file-6.png ':size=40%')
 
 > [!NOTE] 
 >
@@ -201,7 +201,7 @@ Hudi通过索引机制提供高效的upserts，具体是将给定的hoodie key(r
 
 Hudi 为了消除不必要的读写，引入了索引的实现。在有了索引之后，更新的数据可以快速被定位到对应的 File Group。
 
-![Hudi索引](../images/hudi/hudi-consept-1/hudi-consept-index-7.png ':size=50%')
+![Hudi索引](img/hudi/hudi-consept-1/hudi-consept-index-7.png ':size=50%')
 
 
 
@@ -265,7 +265,7 @@ Hudi支持动态布隆过滤器（设置hoodie.bloom.index.filter.type=DYNAMIC_V
 
 hudi使用布隆过滤器写入：
 
-![](../images/hudi/hudi-consept-1/hudi-consept-index-8.gif)
+![](img/hudi/hudi-consept-1/hudi-consept-index-8.gif)
 
 
 （2）对事件表的去重
@@ -291,7 +291,7 @@ hudi使用布隆过滤器写入：
 hudi使用布隆过滤器（裁剪）写入：
 
 
-![](../images/hudi/hudi-consept-1/hudi-consept-index-9.gif)
+![](img/hudi/hudi-consept-1/hudi-consept-index-9.gif)
 
 （3）对维度表的随机更删
 
@@ -309,7 +309,7 @@ hudi使用布隆过滤器（裁剪）写入：
 
 这些表也非常适合采用Merge-On-Read表型：
 
-![](../images/hudi/hudi-consept-1/hudi-consept-index-10.gif)
+![](img/hudi/hudi-consept-1/hudi-consept-index-10.gif)
 
 #### 表类型-Table Type
 
@@ -321,11 +321,11 @@ hudi使用布隆过滤器（裁剪）写入：
 
 假设我们有 3 个文件组，其中包含如下数据文件。
 
-![cow-1](../images/hudi/hudi-consept-1/hudi-consept-cow-11.png ':size=50%')
+![cow-1](img/hudi/hudi-consept-1/hudi-consept-cow-11.png ':size=50%')
 
 我们进行一批新的写入，在索引后，我们发现这些记录与File group 1 和File group 2 匹配，然后有新的插入，我们将为其创建一个新的文件组（File group 4）。
 
-![cow-2](../images/hudi/hudi-consept-1/hudi-consept-cow-12.png ':size=50%')
+![cow-2](img/hudi/hudi-consept-1/hudi-consept-cow-12.png ':size=50%')
 
 > [!note] 
 >
@@ -339,11 +339,11 @@ MOR表中，包含列存的**基本文件**（.parquet）和**行存的增量日
 
 顾名思义，MOR表的合并成本在读取端。因此在写入期间我们不会合并或创建较新的数据文件版本。标记/索引完成后，对于具有要更新记录的现有数据文件，Hudi 创建增量日志文件并适当命名它们，以便它们都属于一个文件组。
 
-![mor-1](../images/hudi/hudi-consept-1/hudi-consept-mor-13.png ':size=50%')
+![mor-1](img/hudi/hudi-consept-1/hudi-consept-mor-13.png ':size=50%')
 
 读取端将实时合并基本文件及其各自的增量日志文件。每次的读取延迟都比较高（因为查询时进行合并），所以 Hudi 使用压缩机制来将数据文件和日志文件合并在一起并创建更新版本的数据文件。
 
-![mor-2](../images/hudi/hudi-consept-1/hudi-consept-mor-14.png ':size=50%')
+![mor-2](img/hudi/hudi-consept-1/hudi-consept-mor-14.png ':size=50%')
 
 用户可以选择内联或异步模式运行压缩。
 
@@ -385,7 +385,7 @@ Hudi支持如下三种查询类型：
 
 下图是COW的快照查询：
 
-![COW-快照查询](../images/hudi/hudi-consept-1/hudi-consept-query-15.png  ':size=50%')
+![COW-快照查询](img/hudi/hudi-consept-1/hudi-consept-query-15.png  ':size=50%')
 
 2）**Incremental Queries**
 
@@ -397,7 +397,7 @@ Hudi支持如下三种查询类型：
 
 下图是MOR表的快照查询与读优化查询的对比：
 
-![MOR-查询](../images/hudi/hudi-consept-1/hudi-consept-update-5.png ':size=60%')
+![MOR-查询](img/hudi/hudi-consept-1/hudi-consept-update-5.png ':size=60%')
 
 Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 
@@ -413,11 +413,11 @@ Read Optimized Queries是对Merge On Read表类型快照查询的优化。
 | Copy On Write | Snapshort Queries + Incremental Queries                      |
 | Merge On Read | Snapshort Queries + Incremental Queries + Read Optimized Queries |
 
-![](../images/hudi/hudi-consept-1/hudi-consept-cowquery-16.gif)
+![](img/hudi/hudi-consept-1/hudi-consept-cowquery-16.gif)
 
 > [!tip] COW表数据插入和更新，快照查询和增量查询
 
-![](../images/hudi/hudi-consept-1/hudi-consept-morquery-17.gif)
+![](img/hudi/hudi-consept-1/hudi-consept-morquery-17.gif)
 
 > [!tip] MOR表数据插入和更新，快照查询，增量查询，读优化查询
 
