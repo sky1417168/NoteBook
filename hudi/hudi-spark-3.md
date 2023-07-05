@@ -351,7 +351,7 @@ object HudiIncrementalReadDemo {
 
 - **重载属性**：HoodiePayloadConfig
 
->  [!note]
+> [!note]
 >
 > 以上这些属性都可以在官网查找到：https://hudi.apache.org/docs/configurations
 >
