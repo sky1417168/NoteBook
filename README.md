@@ -19,11 +19,13 @@
 
 - [2 - Hudi编译](/hudi/hudi-compile-2.md)
 
-- [3 - Hudi-Spark](/hudi/hudi-spark-3.md)
+- [3 - Hudi集成Spark](/hudi/hudi-spark-3.md)
 
-- [4 - Hudi-Flink](/hudi/hudi-flink-4.md)
+- [4 - Hudi集成Flink](/hudi/hudi-flink-4.md)
 
-- [5 - Hudi-Hive](/hudi/hudi-hive-5.md)
+- [5 - Hudi集成Hive](/hudi/hudi-hive-5.md)
+
+- [6 - Hudi参数配置](/hudi/hudi-params-6.md)
 
 <!--## 🍉 Spark-->
 
