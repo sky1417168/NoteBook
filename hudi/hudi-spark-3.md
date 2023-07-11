@@ -635,11 +635,136 @@ show partitions hudi_cow_pt_tbl;
 --drop partition：
 alter table hudi_cow_pt_tbl drop partition (dt='2021-12-09', hh='10');
 
---show commit's info
+--show commits info
 call show_commits(table => 'test_hudi_table', limit => 10);
 ```
 
+### 5、spark离线合并(async clustering)
 
+#### Clustering策略
+
+##### 计划策略
+
+- **SparkRecentDaysClusteringPlanStrategy**：
+
+  > [!attention]
+  >
+  > **这是计划的默认策略**
+
+  根据以前的`N`天分区创建一个计划，将这些分区中的小文件片进行`Clustering`。
+
+  当工作负载是可预测的并且数据是按时间划分时，比较有效。
+
+- **SparkSizeBasedClusteringPlanStrategy**：
+
+  根据基本文件的小文件限制选择文件切片并创建`Clustering`组，最大大小为每个组允许的最大文件大小。
+
+  此策略对于将中等大小的文件合并成大文件非常有用，以减少跨冷分区分布的大量文件。
+
+- **SparkSelectedPartitionsClusteringPlanStrategy**：
+
+  如果只想对某个范围内的特定分区进行`Clustering`，那么无论这些分区是新分区还是旧分区。
+
+  要使用此策略，还需要在下面设置两个配置（包括开始和结束分区）：
+
+  ```properties
+  hoodie.clustering.plan.strategy.cluster.begin.partition=
+  hoodie.clustering.plan.strategy.cluster.end.partition=
+  ```
+  
+- **SparkSingleFileSortPlanStrategy**：
+
+  当策略为SparkSingleFileSortPlanStrategy时，需要指定执行策略为SparkSingleFileSortExecutionStrategy
+
+##### 执行策略
+
+- **SparkSortAndSizeExecutionStrategy**：
+
+  > [!attention]
+  >
+  > **这个是执行的默认策略**
+
+  使用bulk_insert从输入文件组重写数据
+
+- **JavaSortAndSizeExecutionStrategy**：
+
+  类似于SparkSortAndSizeExecutionStrategy，适用于Java和Flink引擎
+
+- **MultipleSparkJobExecutionStrategy**
+
+- **SingleSparkJobExecutionStrategy**：
+
+  强制Hudi使用单Spark作业
+
+- **SparkSingleFileSortExecutionStrategy**
+
+##### 更新策略
+
+默认情况下更新策略的配置设置为`SparkRejectUpdateStrategy`。如果某个文件组在`Clustering`期间有更新，则它将拒绝更新并引发异常
+
+#### 离线合并案例
+
+- clusteringjob.properties
+
+  ```properties
+  hoodie.clustering.async.enabled=true
+  hoodie.clustering.async.max.commits=0
+  hoodie.clustering.plan.strategy.partition.selected=20230709
+  hoodie.clustering.execution.strategy.class=org.apache.hudi.client.clustering.run.strategy.SparkSortAndSizeExecutionStrategy
+  hoodie.clustering.plan.strategy.target.file.max.bytes=134217728
+  hoodie.clustering.plan.strategy.small.file.limit=104857600
+  ```
+
+  > [!note]
+  >
+  > 异步执行
+  >
+  > 立即执行
+  >
+  > 指定分区20230709
+  >
+  > 指定执行策略（默认策略可以不指定）
+  >
+  > 文件大小上限120M
+  >
+  > 小文件限制100M
+
+- 执行命令，合并指定分区
+
+  ```bash
+  spark-submit \
+  --master yarn \
+  --num-executors 20 \
+  --queue queue_name \
+  --class org.apache.hudi.utilities.HoodieClusteringJob \
+  /data/service/flink-1.14.6/lib/hudi-utilities-bundle_2.12-0.12.0.jar \
+  --props file:///path/to/conf/clusteringjob.properties \
+  --mode scheduleAndExecute \
+  --base-path /path/to/table_name \
+  --table-name table_name \
+  --spark-memory 4g
+  ```
+
+  或者动态指定分区参数，那么需要将配置文件里的参数删除，执行命令修改如下：
+
+  ```bash
+  spark-submit \
+  --master yarn \
+  --num-executors 10 \
+  --queue queue_name \
+  --class org.apache.hudi.utilities.HoodieClusteringJob \
+  /data/service/flink-1.14.6/lib/hudi-utilities-bundle_2.12-0.12.0.jar \
+  --props file:///path/to/conf/clusteringjob.properties \
+  --mode scheduleAndExecute \
+  --base-path /path/to/table_name \
+  --table-name table_name \
+  --spark-memory 4g \
+  --hoodie-conf hoodie.clustering.plan.strategy.partition.selected=20230707
+  ```
+
+  > [!note]
+  >
+  > 如果需要动态指定其他参数，也是这样修改，使用--hoodie-conf来指定
 
 
 
