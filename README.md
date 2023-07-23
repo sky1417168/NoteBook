@@ -23,15 +23,21 @@
 
 - [4 - Hudi集成Flink](/hudi/hudi-flink-4.md)
 
-- [5 - Hudi集成Hive](/hudi/hudi-hive-5.md)
+- [5 - Flink CDC 入湖](/hudi/hudi-flink-cdc-5.md)
 
-- [6 - Hudi参数配置](/hudi/hudi-params-6.md)
+- [5 - Hudi集成Hive](/hudi/hudi-hive-6.md)
 
-<!--## 🍉 Spark-->
+- [6 - Hudi参数配置](/hudi/hudi-params-7.md)
+
+## 🍉 Spark
+
+- [1 - Spark多线程](/spark/spark-threads.md)
 
 <!--## 🍋 Flink-->
 
 <!--## 🥭 Hive-->
+
+
 
 # 📗 编程
 
