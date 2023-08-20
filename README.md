@@ -6,6 +6,13 @@
 
 - 😉爱分享，爱生活！！！
 
+
+# 🥭 杂乱的知识
+
+## 够用的数学知识
+
+- [1 - 正态分布](/math/gaussian.md)
+
 # 📙 大数据
 
 ## Hadoop
@@ -24,10 +31,6 @@
 - [4 - Hudi集成Flink](/hudi/hudi-flink-4.md)
 
 - [5 - Flink CDC 入湖](/hudi/hudi-flink-cdc-5.md)
-
-- [5 - Hudi集成Hive](/hudi/hudi-hive-6.md)
-
-- [6 - Hudi参数配置](/hudi/hudi-params-7.md)
 
 ## 🍉 Spark
 
