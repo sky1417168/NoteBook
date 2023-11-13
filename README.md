@@ -36,6 +36,9 @@
 
 - [1 - Spark多线程](/spark/spark-threads.md)
 
+## 🍋 Kafka
+- [Kafka 总结](/kafka/Kafka%20技术文档.md)
+
 <!--## 🍋 Flink-->
 
 <!--## 🥭 Hive-->
